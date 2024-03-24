@@ -2,7 +2,6 @@
 
 # Function to check if the maze is valid
 check_maze_validity() {
-    # take the stdin and assign it to the variable
     local maze_file="$1"
     local width="$2"
     local height="$3"
@@ -46,7 +45,7 @@ if [ "$#" -ne 3 ]; then
     exit 1
 fi
 
-# Extract arguments
+# take the stdin and assign it to the variable
 maze_file="$1"
 width="$2"
 height="$3"
