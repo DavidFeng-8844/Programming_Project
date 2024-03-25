@@ -7,6 +7,7 @@ check_maze_validity() {
     local height="$3"
     local maze_file_test="$4"
     
+    # Run the maze C program with the maze file and dimensions
     ./maze "$maze_file" "$width" "$height" < "$maze_file_test"
     
     # Check if maze file exists
