@@ -45,7 +45,7 @@ if [ "$#" -ne 3 ]; then
     exit 1
 fi
 
-# take the stdin and assign it to the variable
+# take the stdin and assign it to the variables
 maze_file="$1"
 width="$2"
 height="$3"
