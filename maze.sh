@@ -24,7 +24,8 @@ check_maze_validity() {
 
     # Check if maze dimensions match the specified width and height
     local actual_width=$(awk 'NR==1 { print length($0) }' "$maze_file")
-    local actual_height=$(wc -l < "$maze_file")
+    # local actual_height=$(wc -l < "$maze_file")
+    local actual_height=$(awk '/./ { last_non_empty_line = NR } END { print last_non_empty_line }' "$maze_file") # Count non-empty lines
     if [[ "$actual_width" -ne "$width" || "$actual_height" -ne "$height" ]]; then
         echo "Mismatch in maze dimensions: expected width=$width, height=$height, but actual width=$actual_width, height=$actual_height."
         return 1
@@ -71,10 +72,3 @@ for maze_file_test in $maze_files_test_path/*_test.txt; do
         echo "No test file found for maze: $maze_file_test"
     fi
 done
-
-: '
-# Additional test case outside the loop for demonstration
-# Test case 1: Valid maze dimensions and file
-echo "Test case 1: Valid maze dimensions and file"
-check_maze_validity "mazes/reg_5x5.txt" 5 5 "maze_tests/reg_5x5_test.txt"
-'
