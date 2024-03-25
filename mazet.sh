@@ -7,7 +7,7 @@ check_maze_validity() {
     local height="$3"
     local maze_file_test="$4"
     
-    ./maze "$maze_file" "$width" "$height" < $maze_file_test
+    ./maze "$maze_file" "$width" "$height" < "$maze_file_test"
     
     # Check if maze file exists
     if [ ! -f "$maze_file" ]; then
@@ -36,27 +36,33 @@ check_maze_validity() {
         return 1
     fi
 
-    echo "Maze is valid."
+    echo "$maze_file is valid."
     return 0
 }
 
 # Main script
 # Specify the paths for maze files and their test files
-maze_files_path="/mazes"
-maze_files_test_path="/maze_tests"
-# test all the files in the maze_files_test_path
-for maze_file_test in "$maze_files_test_path"/*_test.txt; do
+maze_files_path="mazes"
+maze_files_test_path="mazes_tests"
+
+# Test all the files in the maze_files_test_path
+for maze_file_test in $maze_files_test_path/*_test.txt; do
+    echo "Testing maze file: $maze_file_test"
     if [ -f "$maze_file_test" ]; then
         # Extract maze file name without the "_test.txt" suffix
         maze_file=$(basename "$maze_file_test" "_test.txt")
-
+        echo "Maze file: $maze_file"
         # Extract maze dimensions from the maze file name
-        filename=$(basename "$maze_file")
-        width=$(echo "$filename" | cut -d_ -f1)
-        height=$(echo "$filename" | cut -d_ -f2)
+        if [[ "$maze_file" =~ ([0-9]+)x([0-9]+) ]]; then
+            width="${BASH_REMATCH[1]}"
+            height="${BASH_REMATCH[2]}"
+        else
+            echo "Failed to extract dimensions from file name: $maze_file"
+            continue
+        fi
 
         # Construct the full path of the maze file
-        maze_file_full_path="$maze_files_path/$maze_file"
+        maze_file_full_path="$maze_files_path/$maze_file.txt"
 
         # Check maze validity using the C program
         check_maze_validity "$maze_file_full_path" "$width" "$height" "$maze_file_test"
@@ -64,6 +70,10 @@ for maze_file_test in "$maze_files_test_path"/*_test.txt; do
         echo "No test file found for maze: $maze_file_test"
     fi
 done
+
+: '
+# Additional test case outside the loop for demonstration
 # Test case 1: Valid maze dimensions and file
 echo "Test case 1: Valid maze dimensions and file"
-check_maze_validity "mazes/reg_5x5.txt" 5 5 
+check_maze_validity "mazes/reg_5x5.txt" 5 5 "maze_tests/reg_5x5_test.txt"
+'

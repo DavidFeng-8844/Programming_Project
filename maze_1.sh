@@ -1,14 +1,11 @@
 #!/bin/bash
 
-# Function to check if the maze is valid using the C program
+# Function to check if the maze is valid
 check_maze_validity() {
     local maze_file="$1"
     local width="$2"
     local height="$3"
-    local maze_file_test="$4"
-    
-    ./maze "$maze_file" "$width" "$height" < $maze_file_test
-    
+
     # Check if maze file exists
     if [ ! -f "$maze_file" ]; then
         echo "Maze file '$maze_file' not found."
@@ -41,29 +38,17 @@ check_maze_validity() {
 }
 
 # Main script
-# Specify the paths for maze files and their test files
-maze_files_path="/mazes"
-maze_files_test_path="/maze_tests"
-# test all the files in the maze_files_test_path
-for maze_file_test in "$maze_files_test_path"/*_test.txt; do
-    if [ -f "$maze_file_test" ]; then
-        # Extract maze file name without the "_test.txt" suffix
-        maze_file=$(basename "$maze_file_test" "_test.txt")
 
-        # Extract maze dimensions from the maze file name
-        filename=$(basename "$maze_file")
-        width=$(echo "$filename" | cut -d_ -f1)
-        height=$(echo "$filename" | cut -d_ -f2)
+# Check if correct number of arguments is provided
+if [ "$#" -ne 3 ]; then
+    echo "Usage: $0 <maze_file> <width> <height>"
+    exit 1
+fi
 
-        # Construct the full path of the maze file
-        maze_file_full_path="$maze_files_path/$maze_file"
+# take the stdin and assign it to the variables
+maze_file="$1"
+width="$2"
+height="$3"
 
-        # Check maze validity using the C program
-        check_maze_validity "$maze_file_full_path" "$width" "$height" "$maze_file_test"
-    else
-        echo "No test file found for maze: $maze_file_test"
-    fi
-done
-# Test case 1: Valid maze dimensions and file
-echo "Test case 1: Valid maze dimensions and file"
-check_maze_validity "mazes/reg_5x5.txt" 5 5 
+# Check maze validity
+check_maze_validity "$maze_file" "$width" "$height"
