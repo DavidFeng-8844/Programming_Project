@@ -1,13 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define MAX_HEIGHT 50
-#define MAX_WIDTH 50
+#define MAX_HEIGHT 100
+#define MAX_WIDTH 100
 
 // Function to print the maze
-void print_maze(char maze[MAX_HEIGHT][MAX_WIDTH], int height, int width) {
+void print_maze(char maze[MAX_HEIGHT][MAX_WIDTH], int height, int width, int player_row, int player_col) {
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
+            if (i == player_row && j == player_col && maze[player_row][player_col] != 'S') {
+                printf("%c", '0');
+                continue;
+            }
             printf("%c", maze[i][j]);
         }
         printf("\n");
@@ -37,7 +41,7 @@ void play_game(char maze[MAX_HEIGHT][MAX_WIDTH], int height, int width) {
     char move;
     while (1) {
         // Print the maze
-        print_maze(maze, height, width);
+        print_maze(maze, height, width, player_row, player_col);
 
         // Read user input for movement
         printf("Enter your move (W/A/S/D to move, Q to quit): ");
@@ -83,7 +87,7 @@ void play_game(char maze[MAX_HEIGHT][MAX_WIDTH], int height, int width) {
 
         // Check if the player reached the exit
         if (maze[player_row][player_col] == 'E') {
-            print_maze(maze, height, width);
+            print_maze(maze, height, width, player_row, player_col);
             printf("Congratulations! You've reached the exit.\n");
             return;
         }
